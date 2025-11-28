@@ -48,6 +48,13 @@ class BlackTestCase(unittest.TestCase):
         black.assert_stable(source, actual, line_length=ll)
         self.assertFalse(ff(THIS_DIR / '..' / 'black.py'))
 
+        try:
+            exp_node = black.lib2to3_parse(expected)
+            bdv = black.DebugVisitor()
+            list(bdv.visit(exp_node))
+        except Exception as ve:
+            black.err(str(ve))
+        
     def test_piping(self) -> None:
         source, expected = read_data('../black')
         hold_stdin, hold_stdout = sys.stdin, sys.stdout
