@@ -20,21 +20,15 @@ THIS_DIR = THIS_FILE.parent
 class BlackTestCase(unittest.TestCase):
     maxDiff = None
 
-    def assertFormatEqual(self, expected: str,
-                          actual: str) -> None:
-        bdv: black.DebugVisitor[self]
-        black.out('Expected tree:', fg='blue')
-        if expected:
-            try:
-                exp_node = black.lib2to3_parse(expected)
-                bdv = black.DebugVisitor()
-                list(bdv.visit(exp_node))
-            except Exception as ve:
-                black.err(str(ve))
-        else:
-            fs = partial(black.format_str, line_length=ll)
-            THIS_FILE = Path(__file__)
-            THIS_DIR = THIS_FILE.parent
+    def assertFormatEqual(self, expected: str, actual: str) -> None:
+        bdv: black.DebugVisitor[Any]
+        black.out('Expected tree:', fg='green')
+        try:
+            exp_node = black.lib2to3_parse(expected)
+            bdv = black.DebugVisitor()
+            list(bdv.visit(exp_node))
+        except Exception as ve:
+            black.err(str(ve))
 
     @patch("black.dump_to_file", dump_to_stderr)
     def test_self(self) -> None:
